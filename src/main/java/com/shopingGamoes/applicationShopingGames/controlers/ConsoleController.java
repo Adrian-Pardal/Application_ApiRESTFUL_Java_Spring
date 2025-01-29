@@ -3,14 +3,12 @@ package com.shopingGamoes.applicationShopingGames.controlers;
 import com.shopingGamoes.applicationShopingGames.dtos.ConsoleRecordsDto;
 import com.shopingGamoes.applicationShopingGames.models.ConsoleModel;
 import com.shopingGamoes.applicationShopingGames.repositories.ConsoleRepository;
-import com.shopingGamoes.applicationShopingGames.services.ServiceConsoles;
+import com.shopingGamoes.applicationShopingGames.services.ServiceConsole;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +25,7 @@ public class ConsoleController {
     ConsoleRepository consoleRepository;
 
     @Autowired
-    ServiceConsoles serviceConsoles;
+    ServiceConsole serviceConsole;
 
     //Metodo para Criar o Console
     @PostMapping("/consoles")
@@ -50,8 +48,8 @@ public class ConsoleController {
 
             }
         }
-        // chamando classe Service para insciar o findAll. Escolhendo qual Pagina e a quantidade de  Itens
-        return  ResponseEntity.status(HttpStatus.OK).body(serviceConsoles.findAllPaginacao(pagina , itens));
+        // chamando classe Service para instanciar o findAll. Escolhendo qual Pagina e a quantidade de  Itens
+        return  ResponseEntity.status(HttpStatus.OK).body(serviceConsole.findAllPaginacao(pagina , itens));
     }
 
     //Metodo Getone que vai pesquisar um unico console

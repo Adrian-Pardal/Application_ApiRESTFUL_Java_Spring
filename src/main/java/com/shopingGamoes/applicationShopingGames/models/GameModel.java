@@ -22,6 +22,7 @@ public class GameModel extends RepresentationModel<GameModel> implements Seriali
     private BigDecimal value;
 
     public UUID getIdGame(){
+
         return idGame;
     }
     public void setIdGame(UUID idGame){
