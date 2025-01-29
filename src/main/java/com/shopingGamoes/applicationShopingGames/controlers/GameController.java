@@ -3,6 +3,7 @@ package com.shopingGamoes.applicationShopingGames.controlers;
 import com.shopingGamoes.applicationShopingGames.dtos.GameRecordsDto;
 import com.shopingGamoes.applicationShopingGames.models.GameModel;
 import com.shopingGamoes.applicationShopingGames.repositories.GameRepository;
+import com.shopingGamoes.applicationShopingGames.services.ServiceConsoles;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class GameController {
 
     @Autowired
     GameRepository gameRepository;
+
+
 
     //Metodo para Criar o Jogo na base de dados
     @PostMapping("/games")

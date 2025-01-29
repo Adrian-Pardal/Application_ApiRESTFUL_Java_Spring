@@ -3,9 +3,11 @@ package com.shopingGamoes.applicationShopingGames.controlers;
 import com.shopingGamoes.applicationShopingGames.dtos.ConsoleRecordsDto;
 import com.shopingGamoes.applicationShopingGames.models.ConsoleModel;
 import com.shopingGamoes.applicationShopingGames.repositories.ConsoleRepository;
+import com.shopingGamoes.applicationShopingGames.services.ServiceConsoles;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -24,6 +26,9 @@ public class ConsoleController {
     @Autowired
     ConsoleRepository consoleRepository;
 
+    @Autowired
+    ServiceConsoles serviceConsoles;
+
     //Metodo para Criar o Console
     @PostMapping("/consoles")
     public ResponseEntity<ConsoleModel> saveConsole(@RequestBody @Valid ConsoleRecordsDto consoleRecordsDto){
@@ -34,7 +39,7 @@ public class ConsoleController {
 
     //Metodo GetAll pesquisar todos os consoles no banco de dados
     @GetMapping("/consoles")
-    public ResponseEntity<List<ConsoleModel>> getAllConsoles(){
+    public ResponseEntity<List<ConsoleModel>> getAllConsoles(@RequestParam("pagina") int pagina, @RequestParam("itens") int itens){
 
         List<ConsoleModel> consoleList = consoleRepository.findAll();
         if(!consoleList.isEmpty()){
@@ -42,9 +47,11 @@ public class ConsoleController {
 
                 UUID id = console.getIdConsole();
                 console.add(linkTo(methodOn(ConsoleController.class).getOneConsole(id)).withSelfRel());
+
             }
         }
-        return ResponseEntity.status(HttpStatus.OK).body(consoleList);
+        // chamando classe Service para insciar o findAll. Escolhendo qual Pagina e a quantidade de  Itens
+        return  ResponseEntity.status(HttpStatus.OK).body(serviceConsoles.findAllPaginacao(pagina , itens));
     }
 
     //Metodo Getone que vai pesquisar um unico console
@@ -55,7 +62,8 @@ public class ConsoleController {
         if (consoleO.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Console não encontrado! .");
         }
-        consoleO.get().add(linkTo(methodOn(ConsoleController.class).getAllConsoles()).withRel("Lista de Consoles"));
+        consoleO.get().add(linkTo(methodOn(ConsoleController.class).getAllConsoles(0,5 )).withRel("Lista de Consoles"));
+        // vai ser redirecionado para o GetAll ja com esse input padrao de pagina 0 , itens 5
         return ResponseEntity.status(HttpStatus.OK).body(consoleO.get());
     }
 
