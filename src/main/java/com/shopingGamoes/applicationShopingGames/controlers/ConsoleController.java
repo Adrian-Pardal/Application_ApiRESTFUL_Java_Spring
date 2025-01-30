@@ -30,16 +30,15 @@ public class ConsoleController {
     //Metodo para Criar o Console
     @PostMapping("/consoles")
     public ResponseEntity<ConsoleModel> saveConsole(@RequestBody @Valid ConsoleRecordsDto consoleRecordsDto){
-        var consoleModel = new ConsoleModel();
-        BeanUtils.copyProperties(consoleRecordsDto , consoleModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(consoleRepository.save(consoleModel));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(serviceConsole.saveConsole(consoleRecordsDto));
     }
 
     //Metodo GetAll pesquisar todos os consoles no banco de dados
     @GetMapping("/consoles")
     public ResponseEntity<List<ConsoleModel>> getAllConsoles(@RequestParam("pagina") int pagina, @RequestParam("itens") int itens){
 
-        List<ConsoleModel> consoleList = consoleRepository.findAll();
+        /*List<ConsoleModel> consoleList = consoleRepository.findAll();
         if(!consoleList.isEmpty()){
             for (ConsoleModel console : consoleList){
 
@@ -47,8 +46,8 @@ public class ConsoleController {
                 console.add(linkTo(methodOn(ConsoleController.class).getOneConsole(id)).withSelfRel());
 
             }
-        }
-        // chamando classe Service para instanciar o findAll. Escolhendo qual Pagina e a quantidade de  Itens
+        }*/
+
         return  ResponseEntity.status(HttpStatus.OK).body(serviceConsole.findAllPaginacao(pagina , itens));
     }
 
@@ -56,37 +55,27 @@ public class ConsoleController {
     @GetMapping("/consoles/{id}")
     public ResponseEntity<Object> getOneConsole(@PathVariable(value = "id") UUID id){
 
-        Optional<ConsoleModel> consoleO = consoleRepository.findById(id);
+        /*Optional<ConsoleModel> consoleO = consoleRepository.findById(id);
         if (consoleO.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Console não encontrado! .");
         }
-        consoleO.get().add(linkTo(methodOn(ConsoleController.class).getAllConsoles(0,5 )).withRel("Lista de Consoles"));
-        // vai ser redirecionado para o GetAll ja com esse input padrao de pagina 0 , itens 5
-        return ResponseEntity.status(HttpStatus.OK).body(consoleO.get());
+        consoleO.get().add(linkTo(methodOn(ConsoleController.class).getAllConsoles(0,5 )).withRel("Lista de Consoles"));*/
+
+        return serviceConsole.getOneConsole(id);
     }
 
     //Metodo Put para atualizar os consoles
     @PutMapping("/consoles/{id}")
     public ResponseEntity<Object> updateConsole(@PathVariable(value = "id") UUID id , @RequestBody @Valid ConsoleRecordsDto consoleRecordsDto){
 
-        Optional<ConsoleModel> consoleO = consoleRepository.findById(id);
-        if (consoleO.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Console não encontrado! .");
-        }
-        var consoleModel = consoleO.get();
-        BeanUtils.copyProperties(consoleRecordsDto , consoleModel);
-        return ResponseEntity.status(HttpStatus.OK).body(consoleRepository.save(consoleModel));
+        return serviceConsole.updateConsole(id , consoleRecordsDto) ;
     }
 
     //Metodo de Deletar Console
     @DeleteMapping("/consoles/{id}")
     public ResponseEntity<Object> deleteConsole(@PathVariable(value = "id") UUID id){
-        Optional<ConsoleModel> consoleO = consoleRepository.findById(id);
-        if (consoleO.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Console não encontrado! .");
-        }
-        consoleRepository.delete(consoleO.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Console Deletado com Sucesso");
+
+        return serviceConsole.deleteConsole(id);
     }
 
 }
